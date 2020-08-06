@@ -21,6 +21,7 @@ import grpc
 import helloworld_pb2
 import helloworld_pb2_grpc
 import cv2
+import numpy as np
 
 def rotate_image(image):
     (h, w) = image.shape[:2]           
@@ -37,12 +38,15 @@ class Greeter(helloworld_pb2_grpc.GreeterServicer):
         return helloworld_pb2.HelloReply(message='Hello, %s!' % request.name)
     
     def SayHelloAgain(self, request, context):
-        image = cv2.imread(request.name)
+        #image = cv2.imread(request.name)
+        nparr = np.fromstring(request.data, np.uint8)
+        image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         #image = cv2.resize(shm_image, (640, 540), interpolation=cv2.INTER_AREA)
         image = rotate_image(image)
-        cv2.imwrite('temp.jpg', image)
-        return helloworld_pb2.HelloReply(message='Hello again, %s!' % request.name)
-
+        is_success, im_buf_arr = cv2.imencode(".png", image)
+        byte_im = im_buf_arr.tobytes()
+        #cv2.imwrite('temp.jpg', image)
+        return helloworld_pb2.ImgReply(data=byte_im)
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     helloworld_pb2_grpc.add_GreeterServicer_to_server(Greeter(), server)

@@ -26,7 +26,7 @@ service Greeter {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply) {}
   // Sends another greeting
-  rpc SayHelloAgain (HelloRequest) returns (HelloReply) {}
+  rpc SayHelloAgain (ImgRequest) returns (ImgReply) {}
 }
 
 // The request message containing the user's name.
@@ -37,4 +37,13 @@ message HelloRequest {
 // The response message containing the greetings
 message HelloReply {
   string message = 1;
+}
+
+// The request message containing the user's name.
+message ImgRequest {
+  bytes data = 1;
+}
+
+message ImgReply {
+  bytes data = 1;
 }

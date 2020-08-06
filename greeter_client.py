@@ -16,7 +16,10 @@
 from __future__ import print_function
 import logging
 
+import cv2
+import numpy as np
 import grpc
+
 
 import helloworld_pb2
 import helloworld_pb2_grpc
@@ -30,8 +33,16 @@ def run():
     stub = helloworld_pb2_grpc.GreeterStub(channel)
     response = stub.SayHello(helloworld_pb2.HelloRequest(name='you'))
     print("Greeter client received: " + response.message)
-    response = stub.SayHelloAgain(helloworld_pb2.HelloRequest(name='sample_2005.png'))
-    print("Greeter client received: " + response.message)
+    #response = stub.SayHelloAgain(helloworld_pb2.HelloRequest(name='sample_2005.png'))
+    #print("Greeter client received: " + response.message)
+    image = cv2.imread('sample_2005.png')
+    is_success, im_buf_arr = cv2.imencode(".png", image)
+    byte_im = im_buf_arr.tobytes()
+    response = stub.SayHelloAgain(helloworld_pb2.ImgRequest(data=byte_im))
+    nparr = np.fromstring(response.data, np.uint8)
+    image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    cv2.imwrite('temp.jpg', image)
+    print("Sucess")
 
 if __name__ == '__main__':
     logging.basicConfig()
