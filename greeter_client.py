@@ -39,7 +39,7 @@ def run():
     is_success, im_buf_arr = cv2.imencode(".png", image)
     byte_im = im_buf_arr.tobytes()
     response = stub.SayHelloAgain(helloworld_pb2.ImgRequest(data=byte_im))
-    nparr = np.fromstring(response.data, np.uint8)
+    nparr = np.frombuffer(response.data, np.uint8)
     image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     cv2.imwrite('temp.jpg', image)
     print("Sucess")

@@ -27,7 +27,7 @@ def rotate_image(image):
     (h, w) = image.shape[:2]           
     center = (w / 2, h / 2)
  
-    M = cv2.getRotationMatrix2D(center, 150, 1.0)
+    M = cv2.getRotationMatrix2D(center, 90, 1.0)
     image = cv2.warpAffine(image, M, (w, h))
     return image
 
@@ -39,7 +39,7 @@ class Greeter(helloworld_pb2_grpc.GreeterServicer):
     
     def SayHelloAgain(self, request, context):
         #image = cv2.imread(request.name)
-        nparr = np.fromstring(request.data, np.uint8)
+        nparr = np.frombuffer(request.data, np.uint8)
         image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         #image = cv2.resize(shm_image, (640, 540), interpolation=cv2.INTER_AREA)
         image = rotate_image(image)
