@@ -1,6 +1,8 @@
-#Filename: imgServiceMisc.py
-#Author: Shanmukesh Vankayala
-#Description: Code contains helper or miscellaneous functions
+'''
+Filename: imgServiceMisc.py
+Author: Shanmukesh Vankayala
+Description: Code contains helper or miscellaneous functions
+'''
 
 import cv2
 import numpy as np 
