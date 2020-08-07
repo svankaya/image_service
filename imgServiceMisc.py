@@ -19,4 +19,12 @@ def bytesToImg(imgBytes):
     img = cv2.imdecode(npBuffer, cv2.IMREAD_COLOR)
     return img
 
+def rotateImg(img, rotationAngle):
+    angle = [0, 90, 180, 270]
+    (height, width) = img.shape[:2]           
+    center = (width / 2, height / 2)
+    rotationMatrix = cv2.getRotationMatrix2D(center, angle[rotationAngle], 1.0)
+    img = cv2.warpAffine(img, rotationMatrix, (width, height))
+    return img
+
 
