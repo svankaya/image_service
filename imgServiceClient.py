@@ -18,7 +18,7 @@ from imgServiceImageSpec import imageSpecs
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--host', default='0.0.0.0', help='serving host')
-parser.add_argument('--port', default='9000', help='inception serving port')
+parser.add_argument('--port', default='50051', help='inception serving port')
 parser.add_argument('--image', default='./data/dog/dog1.jpg', help='path to image file')
 parser.add_argument('--service', default='0', choices=['0', '1', '2'], help='request services: 1 for image rotation, 2 for image classification, 0 for both')
 parser.add_argument('--rotation', default='NONE', choices=['NONE', 'NINETY_DEG', 'ONE_EIGHTY_DEG', 'TWO_SEVENTY_DEG'], help='image rotation angle')
@@ -60,7 +60,7 @@ class imgServiceOperations:
 
 def run():
     print("Welcome to imgService")
-    channel = grpc.insecure_channel('localhost:50051')
+    channel = grpc.insecure_channel('{host}:{port}'.format(host=_args.host, port=_args.port))
     stub = image_pb2_grpc.NLImageServiceStub(channel)
     
     imgSrc = cv2.imread(_args.image)
