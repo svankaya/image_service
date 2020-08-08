@@ -19,12 +19,15 @@ from imgServiceImageSpec import imageSpecs
 parser = argparse.ArgumentParser()
 parser.add_argument('--host', default='0.0.0.0', help='serving host')
 parser.add_argument('--port', default='9000', help='inception serving port')
-parser.add_argument('--image', default='', help='path to image file')
+parser.add_argument('--image', default='./data/dog/dog1.jpg', help='path to image file')
+parser.add_argument('--service', default='0', choices=['0', '1', '2'], help='request services: 1 for image rotation, 2 for image classification, 0 for both')
 parser.add_argument('--rotation', default='NONE', choices=['NONE', 'NINETY_DEG', 'ONE_EIGHTY_DEG', 'TWO_SEVENTY_DEG'], help='image rotation angle')
 _args = parser.parse_args()
 
 class imgServiceOperations:
     def rotateImage(self):
+        if(_args.service!='0' and _args.service!='1'):
+                return
         response = self.stub.RotateImage(
                 image_pb2.NLImageRotateRequest(
                     rotation = _args.rotation,
@@ -34,9 +37,12 @@ class imgServiceOperations:
                         width=self.imgSpecs.width,
                         height=self.imgSpecs.height)))
         imgDst = bytesToImg(response.data)
-        cv2.imwrite('temp.jpg', imgDst)
+        cv2.imwrite('out.jpg', imgDst)
+        print("Image rotation: %s is rotated succesfully and saved as ./out.jpg." %_args.image)
 
     def imageClassifier(self):
+        if(_args.service!='0' and _args.service!='2'):
+                return
         response = self.stub.CustomImageEndpoint(
                 image_pb2.NLCustomImageEndpointRequest(
                     image=image_pb2.NLImage(
@@ -44,7 +50,8 @@ class imgServiceOperations:
                         data=self.imgSpecs.imgBytes,
                         width=self.imgSpecs.width,
                         height=self.imgSpecs.height)))
-        print("This image is %.2f percent dog."% ( 100 * response.score))
+        print("Image Classification: %s is %.2f percent dog and %.2f cat."
+                % (_args.image, 100 * response.score, 100 * (1-response.score)))
 
     def __init__(self, stub, imgSpecs):
         self.stub = stub
@@ -52,6 +59,7 @@ class imgServiceOperations:
     
 
 def run():
+    print("Welcome to imgService")
     channel = grpc.insecure_channel('localhost:50051')
     stub = image_pb2_grpc.NLImageServiceStub(channel)
     
@@ -63,13 +71,13 @@ def run():
         print("Error loading the image file")
         sys.exit(1)
     else:
-        print("Loaded the image file successfully")
+        print("Loaded the %s image file successfully" %_args.image)
 
     imgSrcSpecs = imageSpecs(imgSrc)
     imgServices = imgServiceOperations(stub, imgSrcSpecs)
     imgServices.rotateImage();
     imgServices.imageClassifier();
-    print("Success")
+    print("Exiting! Thank you for using the service.")
 
 if __name__ == '__main__':
     logging.basicConfig()
