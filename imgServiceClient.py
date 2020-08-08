@@ -18,7 +18,7 @@ from imgServiceImageSpec import imageSpecs
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--host', default='0.0.0.0', help='serving host')
-parser.add_argument('--port', default='50051', help='inception serving port')
+parser.add_argument('--port', default='30100', help='inception serving port')
 parser.add_argument('--image', default='./data/dog/dog1.jpg', 
         help='path to image file')
 parser.add_argument('--service', default='0', choices=['0', '1', '2'], 

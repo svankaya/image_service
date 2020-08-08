@@ -3,7 +3,7 @@ services:
   img_service_server:
     image: img_service_server
     ports:
-      - '50051:50051'
+      - '50050:50050'
     links:
       - tf_serving_server
     networks:

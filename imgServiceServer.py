@@ -27,8 +27,10 @@ class NLImageService(image_pb2_grpc.NLImageServiceServicer):
         return image_pb2.NLImage(data=imgBytes)
     
     def CustomImageEndpoint(self, request, context):
-        tfServingHost= 'tf_serving_server'
-        tfServingPort= '8500'
+        #tfServingHost= 'tf_serving_server'
+        #tfServingPort= '8500'
+        tfServingHost= 'localhost'
+        tfServingPort= '6379'
         inputTensor = 'input_1'
         outputTensor = 'dense'
         modelName = 'imgclassifier'
@@ -53,7 +55,7 @@ class NLImageService(image_pb2_grpc.NLImageServiceServicer):
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     image_pb2_grpc.add_NLImageServiceServicer_to_server(NLImageService(), server)
-    server.add_insecure_port('[::]:50051')
+    server.add_insecure_port('[::]:80')
     server.start()
     server.wait_for_termination()
 

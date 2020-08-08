@@ -16,3 +16,10 @@ docker run --rm -p 50051:50051 --name img_service_server img_service_server
 docker-compose up -d
 
 python -m grpc_tools.protoc -I./proto/ --python_out=. --grpc_python_out=. ./proto/image.proto
+
+microk8s kubectl create deployment imageserver --image=shanmukesh55/imgserviceserver
+microk8s kubectl expose deployment imageserver --type=NodePort --port=50051
+microk8s kubectl get services
+microk8s  kubectl get deployments
+
+kubectl apply -f kubernetes/
