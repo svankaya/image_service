@@ -1,0 +1,6 @@
+numpy
+tensorflow
+grpcio
+grpcio-tools
+opencv-python
+tensorflow-serving-api

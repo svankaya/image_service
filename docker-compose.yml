@@ -1,0 +1,25 @@
+version: '3'
+services:
+  img_service_server:
+    image: img_service_server
+    ports:
+      - '50051:50051'
+    links:
+      - tf_serving_server
+    networks:
+      - backend
+
+  tf_serving_server:
+    image: tensorflow/serving
+    ports:
+      - '8500:8500'
+    volumes:
+      - ./saved_model:/models/imgclassifier
+    environment:
+      - MODEL_NAME=imgclassifier
+    networks:
+      - backend
+    
+networks:
+  backend:
+    driver: "bridge"

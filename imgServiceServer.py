@@ -27,7 +27,7 @@ class NLImageService(image_pb2_grpc.NLImageServiceServicer):
         return image_pb2.NLImage(data=imgBytes)
     
     def CustomImageEndpoint(self, request, context):
-        channel = grpc.insecure_channel('localhost:8500')
+        channel = grpc.insecure_channel('tf_serving_server:8500')
         stub = prediction_service_pb2_grpc.PredictionServiceStub(channel)
         
         img = bytesToImg(request.image.data).astype(np.float32)
