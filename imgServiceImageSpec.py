@@ -28,6 +28,15 @@ class imageSpecs:
         except:
             print("Expecting only a single channel or a 3 channel RGB image. Exiting")
             sys.exit(1)
+        
+    def chkImgSize(self):
+        try:
+            maxMsgLength = 4096*4096*3
+            if(self.channels*self.height*self.width > maxMsgLength):
+                raise Exception
+        except:
+            print("Image size is beyond the limits of 4096*4096*3. Exiting")
+            sys.exit(1)
 
     def getColor(self):
         if(self.channels == 3):
@@ -43,5 +52,6 @@ class imageSpecs:
         self.getHeight()
         self.getWidth()
         self.getChannels()
+        self.chkImgSize()
         self.getColor()
         self.convertToBytes()

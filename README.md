@@ -14,3 +14,5 @@ docker build -t img_service_server .
 docker run --rm -p 50051:50051 --name img_service_server img_service_server
 
 docker-compose up -d
+
+python -m grpc_tools.protoc -I./proto/ --python_out=. --grpc_python_out=. ./proto/image.proto

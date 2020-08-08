@@ -27,7 +27,13 @@ class NLImageService(image_pb2_grpc.NLImageServiceServicer):
         return image_pb2.NLImage(data=imgBytes)
     
     def CustomImageEndpoint(self, request, context):
-        channel = grpc.insecure_channel('tf_serving_server:8500')
+        tfServingHost= 'tf_serving_server'
+        tfServingPort= '8500'
+        inputTensor = 'input_1'
+        outputTensor = 'dense'
+        modelName = 'imgclassifier'
+        
+        channel = grpc.insecure_channel('{host}:{port}'.format(host=tfServingHost, port=tfServingPort))
         stub = prediction_service_pb2_grpc.PredictionServiceStub(channel)
         
         img = bytesToImg(request.image.data).astype(np.float32)
@@ -35,15 +41,12 @@ class NLImageService(image_pb2_grpc.NLImageServiceServicer):
         tensor = tf.make_tensor_proto(img, shape=[1]+list(img.shape))
         
         # create request to pass to the image classifier server
-        inputTensor = 'input_1'
-        outputTensor = 'dense'
-        modelName = 'imgclassifier'
         req = predict_pb2.PredictRequest()
         req.model_spec.name = modelName
         req.model_spec.signature_name = 'serving_default'
         req.inputs[inputTensor].CopyFrom(tensor)
         
-        response = stub.Predict(req, 30.0)
+        response = stub.Predict(req, 10.0)
         pred = response.outputs[outputTensor].float_val[0]
         return image_pb2.NLCustomImageEndpointResponse(score=pred)
 
