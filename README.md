@@ -1,3 +1,9 @@
+gRPC Image Service
+==================
+
+Description
+-----------
+
 1) export MY_INSTALL_DIR=$HOME/.local
 export PATH="$PATH:$MY_INSTALL_DIR/bin"
 
@@ -28,3 +34,5 @@ docker build -t img_service_client -f Dockerfile-client .
 docker build -t img_service_server -f Dockerfile-server .
 
 docker run -v $(pwd)/data:/image_service/data img_service_client python3 src/imgServiceClient.py --host $(minikube ip) --image ./data/dog/dog1.jpg
+
+minikube start --driver=virtualbox
