@@ -54,8 +54,9 @@ class imgServiceOperations:
                         data=self.imgSpecs.imgBytes,
                         width=self.imgSpecs.width,
                         height=self.imgSpecs.height)))
-        print("Image Classification: %s is %.2f percent dog and %.2f cat."
-                % (_args.image, 100 * response.score, 100 * (1-response.score)))
+        print("Image Classification: There is a chance of %.2f percent " %(100*response.score) + 
+                " for the image %s to be dog and %.2f percent for being cat."
+         % (_args.image, 100 * (1-response.score)))
 
     def __init__(self, stub, imgSpecs):
         self.stub = stub

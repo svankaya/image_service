@@ -15,20 +15,7 @@ spec:
         app: server
     spec:
       containers:
-      - name: tfserver
-        image: tensorflow/serving
-        ports:
-        - containerPort: 6379
-          protocol: TCP
-        volumeMounts:
-        - mountPath: /models/imgclassifier
-          name: volume
       - name: server
         image: shanmukesh55/imgserviceserver:latest
         ports:
         - containerPort: 80
-      volumes:
-      - name : volume
-        hostPath:
-          path: /Users/svankaya/Desktop/neuralink-image-service-prompt/image_service/saved_model
-

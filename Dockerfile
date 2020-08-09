@@ -10,6 +10,7 @@ WORKDIR /image_service
 
 COPY ./proto/image.proto proto/
 COPY data data/
+COPY saved_model saved_model/
 COPY image_pb2.py ./
 COPY image_pb2_grpc.py ./
 COPY imgServiceServer.py ./

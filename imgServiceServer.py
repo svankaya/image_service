@@ -20,6 +20,10 @@ from imgServiceMisc import *
 
 class NLImageService(image_pb2_grpc.NLImageServiceServicer):
     
+    def __init__(self):
+        modelDir = "./saved_model"
+        self.imageClassifierModel = tf.keras.models.load_model(modelDir)
+
     def RotateImage(self, request, context):
         img = bytesToImg(request.image.data)
         img = rotateImg(img, request.rotation)
@@ -27,34 +31,17 @@ class NLImageService(image_pb2_grpc.NLImageServiceServicer):
         return image_pb2.NLImage(data=imgBytes)
     
     def CustomImageEndpoint(self, request, context):
-        #tfServingHost= 'tf_serving_server'
-        #tfServingPort= '8500'
-        tfServingHost= 'localhost'
-        tfServingPort= '6379'
-        inputTensor = 'input_1'
-        outputTensor = 'dense'
-        modelName = 'imgclassifier'
-        
-        channel = grpc.insecure_channel('{host}:{port}'.format(host=tfServingHost, port=tfServingPort))
-        stub = prediction_service_pb2_grpc.PredictionServiceStub(channel)
-        
         img = bytesToImg(request.image.data).astype(np.float32)
         img = cv2.resize(img, (180,180), interpolation = cv2.INTER_AREA)  
-        tensor = tf.make_tensor_proto(img, shape=[1]+list(img.shape))
-        
-        # create request to pass to the image classifier server
-        req = predict_pb2.PredictRequest()
-        req.model_spec.name = modelName
-        req.model_spec.signature_name = 'serving_default'
-        req.inputs[inputTensor].CopyFrom(tensor)
-        
-        response = stub.Predict(req, 10.0)
-        pred = response.outputs[outputTensor].float_val[0]
-        return image_pb2.NLCustomImageEndpointResponse(score=pred)
+        imgArray = tf.keras.preprocessing.image.img_to_array(img)
+        imgArray = tf.expand_dims(imgArray, 0)
+        prediction = self.imageClassifierModel.predict(imgArray)
+        return image_pb2.NLCustomImageEndpointResponse(score=prediction[0])
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    image_pb2_grpc.add_NLImageServiceServicer_to_server(NLImageService(), server)
+    NLImageServiceObj = NLImageService()
+    image_pb2_grpc.add_NLImageServiceServicer_to_server(NLImageServiceObj, server)
     server.add_insecure_port('[::]:80')
     server.start()
     server.wait_for_termination()
