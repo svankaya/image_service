@@ -62,7 +62,7 @@
 ## Usage
 Run the gRPC image service client using: 
 ```sh
-docker run -v $(pwd)/data:/image_service/data img_service_client python3 src/imgServiceClient.py --host $(minikube ip) [Arguments]
+docker run -v $(pwd)/data:/image_service/data shanmukesh55/imgserviceclient python3 src/imgServiceClient.py --host $(minikube ip) [Arguments]
 ```
 
 #### Arguments:
@@ -81,7 +81,7 @@ Rotate an image by ninety degress:
 The host gRPC Image Service source directory is mounted to the running docker image. ***So, it is important that the input images passed as arguments should be located in the ./data directory present in the gRPC Image Service source directory. The output will be saved to ./data/output/out.jpg in the gRPC Image Service source directory***
 ```sh
 #Run the command from the gRPC Image Service source directory 
-docker run -v $(pwd)/data:/image_service/data img_service_client python3 src/imgServiceClient.py --host $(minikube ip) --image ./data/cat/cat10.jpg --service 1 --rotation NINETY_DEG
+docker run -v $(pwd)/data:/image_service/data shanmukesh55/imgserviceclient python3 src/imgServiceClient.py --host $(minikube ip) --image ./data/cat/cat10.jpg --service 1 --rotation NINETY_DEG
 ```
 The output will be similar to:
 ```sh
@@ -93,7 +93,7 @@ Exiting! Thank you for using the service.
 
 Classify an image:
 ```sh
-docker run -v $(pwd)/data:/image_service/data img_service_client python3 src/imgServiceClient.py --host $(minikube ip) --image ./data/cat/cat10.jpg --service 2
+docker run -v $(pwd)/data:/image_service/data shanmukesh55/imgserviceclient python3 src/imgServiceClient.py --host $(minikube ip) --image ./data/cat/cat10.jpg --service 2
 ```
 The output will be similar to:
 ```sh
