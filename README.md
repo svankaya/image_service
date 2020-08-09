@@ -25,7 +25,8 @@
    ```
 3. Start a local kubernetes cluster and check the status
    ```sh
-   minikube start --driver=virtualbox
+   minikube addons enable metrics-server
+   minikube start --extra-config kubelet.EnableCustomMetrics=true --driver=virtualbox
    minikube status
    ```
 4. Deploy the gRPC image service server on the local kubernetes cluster. 
@@ -47,7 +48,13 @@
    NAME                                READY   STATUS    RESTARTS   AGE
    server-deployment-8b57bb766-twgj5   1/1     Running   0          37s
    ```
-5. Get the gRPC image service client by downloading the pre-built docker image
+5. Enable horizontal auto-scaling of the server using:
+   ```sh
+   kubectl autoscale deployment server-deployment --cpu-percent=50 --min=1 --max=20
+   ```
+   This will spun up upto 20 instances of the server to keep up with user demand in an elastic way. When there is less traffic the number of instances of the server are scaled down.
+   
+6. Get the gRPC image service client by downloading the pre-built docker image
    ```sh
    docker pull shanmukesh55/imgserviceclient:latest
    ```
@@ -95,29 +102,3 @@ Loaded the ./data/cat/cat10.jpg image file successfully
 Image Classification: There is a chance of 0.00 percent  for the image ./data/cat/cat10.jpg to be dog and 100.00 percent for being cat.
 Exiting! Thank you for using the service.
 ```
-
-
-
-
-
-
-
-Running the gRPC Image service server
-
-
-
-python -m grpc_tools.protoc -I./proto/ --python_out=. --grpc_python_out=. ./proto/image.proto
-
-microk8s kubectl create deployment imageserver --image=shanmukesh55/imgserviceserver
-microk8s kubectl expose deployment imageserver --type=NodePort --port=50051
-microk8s kubectl get services
-microk8s  kubectl get deployments
-
-kubectl apply -f kubernetes/
-
-docker build -t img_service_client -f Dockerfile-client .
-docker build -t img_service_server -f Dockerfile-server .
-
-docker run -v $(pwd)/data:/image_service/data img_service_client python3 src/imgServiceClient.py --host $(minikube ip) --image ./data/dog/dog1.jpg
-
-minikube start --driver=virtualbox
