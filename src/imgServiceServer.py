@@ -21,7 +21,7 @@ from imgServiceMisc import *
 class NLImageService(image_pb2_grpc.NLImageServiceServicer):
     
     def __init__(self):
-        modelDir = "./saved_model"
+        modelDir = "/image_service/saved_model"
         self.imageClassifierModel = tf.keras.models.load_model(modelDir)
 
     def RotateImage(self, request, context):

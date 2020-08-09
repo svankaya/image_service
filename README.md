@@ -23,3 +23,8 @@ microk8s kubectl get services
 microk8s  kubectl get deployments
 
 kubectl apply -f kubernetes/
+
+docker build -t img_service_client -f Dockerfile-client .
+docker build -t img_service_server -f Dockerfile-server .
+
+docker run -v $(pwd)/data:/image_service/data img_service_client python3 src/imgServiceClient.py --host $(minikube ip) --image ./data/dog/dog1.jpg

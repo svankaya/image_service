@@ -1,0 +1,11 @@
+# Base image
+FROM python:3 AS builder
+
+RUN apt-get update
+
+WORKDIR /image_service
+ADD . /image_service
+RUN pip3 install -r requirements.txt
+
+CMD  ["./start.sh"]
+

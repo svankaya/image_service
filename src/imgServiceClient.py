@@ -19,7 +19,7 @@ from imgServiceImageSpec import imageSpecs
 parser = argparse.ArgumentParser()
 parser.add_argument('--host', default='0.0.0.0', help='serving host')
 parser.add_argument('--port', default='30100', help='inception serving port')
-parser.add_argument('--image', default='./data/dog/dog1.jpg', 
+parser.add_argument('--image', default='/image_service/data/dog/dog1.jpg', 
         help='path to image file')
 parser.add_argument('--service', default='0', choices=['0', '1', '2'], 
         help='request services: 1 for image rotation, 2 for image classification, 0 for both')
@@ -41,8 +41,10 @@ class imgServiceOperations:
                         width=self.imgSpecs.width,
                         height=self.imgSpecs.height)))
         imgDst = bytesToImg(response.data)
-        cv2.imwrite('out.jpg', imgDst)
-        print("Image rotation: %s is rotated succesfully and saved as ./out.jpg." %_args.image)
+        outputFile = '/image_service/data/output/out.jpg'
+        cv2.imwrite(outputFile, imgDst)
+        print("Image rotation: %s is rotated succesfully and saved as %s." 
+                %(_args.image, outputFile))
 
     def imageClassifier(self):
         if(_args.service!='0' and _args.service!='2'):
