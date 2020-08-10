@@ -50,7 +50,7 @@
    ```
 5. Enable horizontal auto-scaling of the server using:
    ```sh
-   kubectl autoscale deployment server-deployment --cpu-percent=50 --min=1 --max=20
+   kubectl autoscale deployment server-deployment --cpu-percent=50 --min=5 --max=10
    ```
    This will spun up upto 20 instances of the server to keep up with user demand in an elastic way. When there is less traffic the number of instances of the server are scaled down.
    
@@ -104,14 +104,12 @@ Image Classification: There is a chance of 0.00 percent  for the image ./data/ca
 Exiting! Thank you for using the service.
 ```
 ## Cleanup
-Run the following commands to stop the deployed server and minkube Kubernetes cluster
+Run the following commands to delete the minkube Kubernetes cluster
 ```sh
-kubectl delete deployment server-deployment
-kubectl delete services my-service
-minikube stop
+minikube delete
 ```
 
-## Limitations and further improvements:
+## Limitations and further improvements
 - The code is tested only for png and jpeg image formats.
 - The image classifier service can give incorrect output when the input image is other than a cat or dog.
 - Minikube used in this work is a lightweigth Kubernetes implementation that can only be deployed on single-node. For deploying the services on a multi-node cluster, other Kubernetes implementations like MicroK8s can be used. 
@@ -120,3 +118,4 @@ minikube stop
 - Currently, both the services are run on a single server. These services can be set up on different servers which can be accessed by a front-end server. This make both the services loosely coupled, independently deployable, highlt maintainable and testable. 
 - While transfering images between client and server, the images can be encrypted for security, compressed for improved network performance.
 - NodePort service has been used in the current work which can have only one service per port and directly exposes the service to external traffic from clients. This can be replaced by load balancer or ingress which don't directly expose the services.
+- Write unit test cases to make sure the code is error free
