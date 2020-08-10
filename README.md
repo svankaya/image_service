@@ -103,6 +103,14 @@ Loaded the ./data/cat/cat10.jpg image file successfully
 Image Classification: There is a chance of 0.00 percent  for the image ./data/cat/cat10.jpg to be dog and 100.00 percent for being cat.
 Exiting! Thank you for using the service.
 ```
+## Cleanup
+Run the following commands to stop the deployed server and minkube Kubernetes cluster
+```sh
+kubectl delete deployment server-deployment
+kubectl delete services my-service
+minikube stop
+```
+
 ## Limitations and further improvements:
 - The code is tested only for png and jpeg image formats.
 - The image classifier service can give incorrect output when the input image is other than a cat or dog.

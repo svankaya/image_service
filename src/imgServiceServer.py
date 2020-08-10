@@ -21,20 +21,29 @@ from imgServiceMisc import *
 class NLImageService(image_pb2_grpc.NLImageServiceServicer):
     
     def __init__(self):
+        #Directory holding the machine learning model
         modelDir = "/image_service/saved_model"
+        #Load the model for inference
         self.imageClassifierModel = tf.keras.models.load_model(modelDir)
 
     def RotateImage(self, request, context):
+        #Convert byte data to image
         img = bytesToImg(request.image.data)
+        #Call the rotate image function
         img = rotateImg(img, request.rotation)
+        #Convert image data back to byte for transfer to client
         imgBytes = imgToBytes(".jpg", img)
         return image_pb2.NLImage(data=imgBytes)
     
     def CustomImageEndpoint(self, request, context):
+        #Convert byte data to image
         img = bytesToImg(request.image.data).astype(np.float32)
-        img = cv2.resize(img, (180,180), interpolation = cv2.INTER_AREA)  
+        #Resize the image size to meet the input format of the machine learning model used
+        img = cv2.resize(img, (180,180), interpolation = cv2.INTER_AREA)
         imgArray = tf.keras.preprocessing.image.img_to_array(img)
+        #Resize the array to input tensor dimensions of the model
         imgArray = tf.expand_dims(imgArray, 0)
+        #Perform inference
         prediction = self.imageClassifierModel.predict(imgArray)
         return image_pb2.NLCustomImageEndpointResponse(score=prediction[0])
 

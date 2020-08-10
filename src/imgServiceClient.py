@@ -16,9 +16,10 @@ import image_pb2_grpc
 from imgServiceMisc import *
 from imgServiceImageSpec import imageSpecs
 
+#Parse the arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--host', required='True', help='serving host')
-parser.add_argument('--port', default='30100', help='inception serving port')
+parser.add_argument('--port', default='30100', help='serving port')
 parser.add_argument('--image', default='/image_service/data/dog/dog1.jpg', 
         help='path to image file')
 parser.add_argument('--service', default='0', choices=['0', '1', '2'], 
@@ -70,6 +71,7 @@ def run():
     channel = grpc.insecure_channel('{host}:{port}'.format(host=_args.host, port=_args.port))
     stub = image_pb2_grpc.NLImageServiceStub(channel)
     
+    #Use opencv library to read the image file
     imgSrc = cv2.imread(_args.image)
     try:
         if (imgSrc is None):
@@ -79,11 +81,18 @@ def run():
         sys.exit(1)
     else:
         print("Loaded the %s image file successfully" %_args.image)
-
+    
+    #Create an imageSpec object to hold the image details
     imgSrcSpecs = imageSpecs(imgSrc)
+
+    #Create imgServiceOperations object
     imgServices = imgServiceOperations(stub, imgSrcSpecs)
-    imgServices.rotateImage();
-    imgServices.imageClassifier();
+
+    #Call the rotate image service
+    imgServices.rotateImage()
+
+    #Call the image classification service
+    imgServices.imageClassifier()
     print("Exiting! Thank you for using the service.")
 
 if __name__ == '__main__':

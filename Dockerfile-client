@@ -4,8 +4,15 @@ FROM python:3 AS builder
 RUN apt-get update
 RUN apt-get install -y libgl1-mesa-dev
 
+# Set the working directory to /image_service
 WORKDIR /image_service
+
+# Copy the current directory to image_service folder
 ADD . /image_service
+
+# Install the required python packages
 RUN pip3 install -r requirements.txt
+
+# Create a data directory in image_service folder
 RUN mkdir data
 
