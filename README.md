@@ -31,6 +31,7 @@
    ```
 4. Deploy the gRPC image service server on the local kubernetes cluster. 
    ```sh
+   # This step will take 5-10 mins
    kubectl apply -f kubernetes/
    ```
    The Docker image required for the deployment are already pre-built and hosted on Docker Hub. This step takes time as it has to download the image and start the required services. The status of the deployment can be discovered by running:
@@ -56,6 +57,7 @@
    
 6. Get the gRPC image service client by downloading the pre-built docker image
    ```sh
+   # This step will take 5-10 mins
    docker pull shanmukesh55/imgserviceclient:latest
    ```
 
@@ -90,6 +92,9 @@ Loaded the ./data/cat/cat10.jpg image file successfully
 Image rotation: ./data/cat/cat10.jpg is rotated succesfully and saved as ./data/output/out.jpg.
 Exiting! Thank you for using the service.
 ```
+|Actual Image           | Rotated Image            |
+|-----------------------|--------------------------|
+| ![](data/dog/dog1.jpg)| ![](data/output/out.jpg) |
 
 #### Classify an image:
 ```sh
