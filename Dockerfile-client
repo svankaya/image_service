@@ -2,6 +2,7 @@
 FROM python:3 AS builder
 
 RUN apt-get update
+RUN apt-get install -y libgl1-mesa-dev
 
 WORKDIR /image_service
 ADD . /image_service

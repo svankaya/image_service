@@ -43,8 +43,8 @@ class imgServiceOperations:
         imgDst = bytesToImg(response.data)
         outputFile = '/image_service/data/output/out.jpg'
         cv2.imwrite(outputFile, imgDst)
-        print("Image rotation: %s is rotated succesfully and saved as %s." 
-                %(_args.image, outputFile))
+        print("Image rotation: %s is rotated succesfully and saved as ./data/output/out.jpg." 
+                %(_args.image))
 
     def imageClassifier(self):
         if(_args.service!='0' and _args.service!='2'):

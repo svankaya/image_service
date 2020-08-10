@@ -76,7 +76,7 @@ docker run -v $(pwd)/data:/image_service/data shanmukesh55/imgserviceclient pyth
 |```-h```, ```--help```|Yes||Shows the help message and exits|
 
 #### Examples
-Rotate an image by ninety degress:
+##### Rotate an image by ninety degress:
 
 The host gRPC Image Service source directory is mounted to the running docker image. ***So, it is important that the input images passed as arguments should be located in the ./data directory present in the gRPC Image Service source directory. The output will be saved to ./data/output/out.jpg in the gRPC Image Service source directory***
 ```sh
@@ -87,12 +87,13 @@ The output will be similar to:
 ```sh
 Welcome to imgService
 Loaded the ./data/cat/cat10.jpg image file successfully
-Image rotation: ./data/cat/cat10.jpg is rotated succesfully and saved as /image_service/data/output/out.jpg.
+Image rotation: ./data/cat/cat10.jpg is rotated succesfully and saved as ./data/output/out.jpg.
 Exiting! Thank you for using the service.
 ```
 
-Classify an image:
+##### Classify an image:
 ```sh
+#Run the command from the gRPC Image Service source directory 
 docker run -v $(pwd)/data:/image_service/data shanmukesh55/imgserviceclient python3 src/imgServiceClient.py --host $(minikube ip) --image ./data/cat/cat10.jpg --service 2
 ```
 The output will be similar to:
@@ -102,3 +103,12 @@ Loaded the ./data/cat/cat10.jpg image file successfully
 Image Classification: There is a chance of 0.00 percent  for the image ./data/cat/cat10.jpg to be dog and 100.00 percent for being cat.
 Exiting! Thank you for using the service.
 ```
+## Limitations and further improvements:
+- The code is tested only for png and jpeg image formats.
+- The image classifier service can give incorrect output when the input image is other than a cat or dog.
+- Minikube used in this work is a lightweigth Kubernetes implementation that can only be deployed on single-node. For deploying the services on a multi-node cluster, other Kubernetes implementations like MicroK8s can be used. 
+- Replace use of OpenCV library on the client side. Some simple file reading library can be used for this purpose. The client side can be made further lightweight by moving all of image processing to the server side.
+- The performance of the services can be futher improved by processing the images on machines having GPU. Cuda programming and Nvidia Performance Primitives(NPP) library can be used for this purpose. The machine learning model can also be further optimized using TensorRT library.
+- Currently, both the services are run on a single server. These services can be set up on different servers which can be accessed by a front-end server. This make both the services loosely coupled, independently deployable, highlt maintainable and testable. 
+- While transfering images between client and server, the images can be encrypted for security, compressed for improved network performance.
+- NodePort service has been used in the current work which can have only one service per port and directly exposes the service to external traffic from clients. This can be replaced by load balancer or ingress which don't directly expose the services.
