@@ -23,7 +23,7 @@
    git clone https://github.com/svankaya/image_service.git
    cd image_service
    ```
-3. Start a local kubernetes cluster and check the status
+3. Start a local kubernetes cluster and check the status. By default Minikube only reserves 2 CPUs and 4GB RAM.
    ```sh
    minikube addons enable metrics-server
    minikube start --extra-config kubelet.EnableCustomMetrics=true --driver=virtualbox
@@ -52,7 +52,7 @@
    ```sh
    kubectl autoscale deployment server-deployment --cpu-percent=50 --min=5 --max=10
    ```
-   This will spun up upto 20 instances of the server to keep up with user demand in an elastic way. When there is less traffic the number of instances of the server are scaled down.
+   This will spun up upto 10 instances of the server to keep up with user demand in an elastic way. When there is less traffic the number of instances of the server are scaled down.
    
 6. Get the gRPC image service client by downloading the pre-built docker image
    ```sh
@@ -65,7 +65,7 @@ Run the gRPC image service client using:
 docker run -v $(pwd)/data:/image_service/data shanmukesh55/imgserviceclient python3 src/imgServiceClient.py --host $(minikube ip) [Arguments]
 ```
 
-#### Arguments:
+### Arguments
 |Name|Optional|Default |Description|
 |-----|--------|--------|-----------|
 |```--host```| No| |serving host|
@@ -75,8 +75,8 @@ docker run -v $(pwd)/data:/image_service/data shanmukesh55/imgserviceclient pyth
 |```--rotation``` {NONE, NINETY_DEG, ONE_EIGHTY_DEG, TWO_SEVENTY_DEG}|Yes|NINETY_DEG|image rotation angle|
 |```-h```, ```--help```|Yes||Shows the help message and exits|
 
-#### Examples
-##### Rotate an image by ninety degress:
+### Examples
+#### Rotate an image by ninety degress:
 
 The host gRPC Image Service source directory is mounted to the running docker image. ***So, it is important that the input images passed as arguments should be located in the ./data directory present in the gRPC Image Service source directory. The output will be saved to ./data/output/out.jpg in the gRPC Image Service source directory***
 ```sh
@@ -91,7 +91,7 @@ Image rotation: ./data/cat/cat10.jpg is rotated succesfully and saved as ./data/
 Exiting! Thank you for using the service.
 ```
 
-##### Classify an image:
+#### Classify an image:
 ```sh
 #Run the command from the gRPC Image Service source directory 
 docker run -v $(pwd)/data:/image_service/data shanmukesh55/imgserviceclient python3 src/imgServiceClient.py --host $(minikube ip) --image ./data/cat/cat10.jpg --service 2
@@ -112,6 +112,7 @@ minikube delete
 ## Limitations and further improvements
 - The code is tested only for png and jpeg image formats.
 - The image classifier service can give incorrect output when the input image is other than a cat or dog.
+- Since only 2 CPU cores and 4GB RAM is used by Minikube, there is limitation on scaling.
 - Minikube used in this work is a lightweigth Kubernetes implementation that can only be deployed on single-node. For deploying the services on a multi-node cluster, other Kubernetes implementations like MicroK8s can be used. 
 - Replace use of OpenCV library on the client side. Some simple file reading library can be used for this purpose. The client side can be made further lightweight by moving all of image processing to the server side.
 - The performance of the services can be futher improved by processing the images on machines having GPU. Cuda programming and Nvidia Performance Primitives(NPP) library can be used for this purpose. The machine learning model can also be further optimized using TensorRT library.
